@@ -1,0 +1,47 @@
+#!/bin/bash
+
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 <db_name> <migration_file_name> (<data_file_name> <corresponding_table_name>...)"
+  exit 1
+fi
+
+DB_NAME="$1"
+MIGRATION_FILE="$2"
+
+if [ ! -f "$MIGRATION_FILE" ]; then
+  echo "Error: Migration file '$MIGRATION_FILE' does not exist."
+  exit 1
+fi
+
+shift 2
+
+if [ $(( $# % 2 )) -ne 0 ]; then
+  echo "Error: Data file names and corresponding table names must be in pairs."
+  exit 1
+fi
+
+rm -f "$DB_NAME"
+
+while [ "$#" -gt 0 ]; do
+  DATA_FILE="$1"
+  TABLE_NAME="$2"
+
+  if [ ! -f "$DATA_FILE" ]; then
+    echo "Error: Data file '$DATA_FILE' does not exist."
+    exit 1
+  fi
+
+  if [ -z "$TABLE_NAME" ]; then
+    echo "Error: Table name cannot be empty."
+    exit 1
+  fi
+
+  sqlite3 "$DB_NAME" <<EOF
+.mode tabs
+.import '$DATA_FILE' '$TABLE_NAME'
+EOF
+
+  shift 2
+done
+
+sqlite3 "$DB_NAME" < "$MIGRATION_FILE"

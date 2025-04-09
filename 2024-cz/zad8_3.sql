@@ -1,18 +1,6 @@
--- CREATE TABLE IF NOT EXISTS szczepionki (
---     kod_szczepionki TEXT,
---     liczba_dawek INTEGER
--- );
--- 
--- CREATE TABLE IF NOT EXISTS wizyty (
---     pesel TEXT,
---     kod_szczepionki TEXT,
---     data_szczepienia DATE,
---     numer_dawki INTEGER
--- );
-
 SELECT
-  STRFTIME("%Y", wizyty.data_szczepienia) AS rok,
-  STRFTIME("%m", wizyty.data_szczepienia) AS miesiac,
+  STRFTIME('%Y', wizyty.data_szczepienia) AS rok,
+  STRFTIME('%m', wizyty.data_szczepienia) AS miesiac,
   COUNT(DISTINCT pesel) AS liczba_osob
 FROM
   wizyty
