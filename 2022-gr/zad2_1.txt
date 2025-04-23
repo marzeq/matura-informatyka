@@ -1,0 +1,1 @@
+Zauważmy, że każdy punkt poza punktem 1 ma swoją strzałkę, więc wzór ogólny na liczbę strzałek to N-1.
