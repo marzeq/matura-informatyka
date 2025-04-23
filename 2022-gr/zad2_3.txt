@@ -1,0 +1,9 @@
+Warto zauważyć, że rysunek jest to forma drzewa binarnego, gdzie ostatni poziom niekoniecznie jest
+pełny. A więc ilość poziomów dla jakiejś liczby $N$ punktów (w tym ten niekoniecznie pełny ostatni)
+można oznaczyć następującą funkcją P(N):
+\[ P(N) = \lceil \log_2(N+1) \rceil \]
+
+Przejść między poziomami dla $P(N)$ poziomów jest dokładnie:
+\[ P(N)-1 \]
+
+A więc dla $N=2047$ punktów mamy $P(2047)=11$ poziomów, a więc $10$ przejść między poziomami, co jest szukaną liczbą.
