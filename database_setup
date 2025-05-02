@@ -1,19 +1,33 @@
 #!/bin/bash
 
-if [ "$#" -lt 2 ]; then
-  echo "Usage: $0 <db_name> <migration_file_name> (<data_file_name> <corresponding_table_name>...)"
+if [ "$#" -lt 3 ]; then
+  echo "Usage: $0 <separator> <db_name> <migration_file_name> (<data_file_name> <corresponding_table_name>...)"
   exit 1
 fi
 
-DB_NAME="$1"
-MIGRATION_FILE="$2"
+SEPARATOR="$1"
+DB_NAME="$2"
+MIGRATION_FILE="$3"
+
+if [ "$SEPARATOR" != "comma" ] && [ "$SEPARATOR" != "semi" ] && [ "$SEPARATOR" != "tab" ]; then
+  echo "Error: Separator must be either 'comma', 'semi' or 'tab'."
+  exit 1
+fi
+
+if [ "$SEPARATOR" == "comma" ]; then
+  sep=","
+elif [ "$SEPARATOR" == "semi" ]; then
+  sep=";"
+elif [ "$SEPARATOR" == "tab" ]; then
+  sep="\\\t"
+fi
 
 if [ ! -f "$MIGRATION_FILE" ]; then
   echo "Error: Migration file '$MIGRATION_FILE' does not exist."
   exit 1
 fi
 
-shift 2
+shift 3
 
 if [ $(( $# % 2 )) -ne 0 ]; then
   echo "Error: Data file names and corresponding table names must be in pairs."
@@ -37,7 +51,8 @@ while [ "$#" -gt 0 ]; do
   fi
 
   sqlite3 "$DB_NAME" <<EOF
-.mode tabs
+.mode csv
+.separator "$sep"
 .import '$DATA_FILE' '$TABLE_NAME'
 EOF
 
